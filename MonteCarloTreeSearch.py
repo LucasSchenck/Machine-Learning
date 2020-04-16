@@ -2,6 +2,8 @@ import random
 import math
 import numpy as np
 
+# An implementation of the Monte Carlo Tree Search algorithm for a Tic-Tac-Toe AI
+
 class Node:
 
     def __init__(self, tiles, parent, move_added, current_player=0):
