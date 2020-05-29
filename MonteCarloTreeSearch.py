@@ -21,7 +21,7 @@ class Node:
         # returns the full list of legal moves for the current player.
         legal_moves = []
         for value in range(9):
-            if self.tiles[value] is -1:
+            if self.tiles[value] == -1:
                 legal_moves.append(value)
 
         return legal_moves
@@ -207,7 +207,7 @@ class MonteCarloTree:
         # returns the full list of legal moves for the current player.
         legal_moves = []
         for value in range(9):
-            if tiles[value] is -1:
+            if tiles[value] == -1:
                 legal_moves.append(value)
 
         return legal_moves
@@ -215,20 +215,26 @@ class MonteCarloTree:
     def get_best_move(self, tiles):
         if self.winner(tiles) != -1:
             print("Game is already over. There is no best move.")
-            return -1;
+            return -1
 
+        print('Searching for node...')
         current = self.root
         while not np.array_equal(current.tiles, tiles):
-            for i in range(9):
-                if current.tiles[i] == -1 and tiles[i] == current.current_player:
-                    for child in current.children:
-                        if child.move_added == i:
-                            current = child
-                            break
-                else:
-                    continue
-                break
+                foundMove = False
+                moves = sorted(current.children.copy(), key=lambda child: child.simulations, reverse=True)
+                for child in moves:
+                    if tiles[child.move_added] == current.current_player:
+                        current = child
+                        print('Move ' + str(current.move_added) + ' added')
+                        foundMove = True
+                        break
 
+                if not foundMove:
+                    print('Move not found. Ending search.')
+                    break
+
+        if foundMove:
+            print('Node found. Ending search.')
         return self.get_play(current).move_added
 
 
